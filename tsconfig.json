@@ -2,9 +2,10 @@
   "compilerOptions": {
     "module": "CommonJS",
     "esModuleInterop": true,
-    "noImplicitAny": true,
+    //"noImplicitAny": true,
     "outDir": "./build",
-    "noEmitOnError": true,
+    //"noEmitOnError": true,
+    "strict": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },

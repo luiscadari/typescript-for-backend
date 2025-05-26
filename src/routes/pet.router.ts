@@ -12,7 +12,7 @@ const petController = new PetController(petRepositorry);
 
 router.post("/", (req, res) => petController.criaPet(req, res));
 router.get("/", (req, res) => petController.getPets(req, res));
-router.put("/:id", (req, res) => petController.patchPet(req, res));
+router.put("/:id", (req, res) => petController.putPet(req, res));
 router.delete("/:id", (req, res) => petController.deletePet(req, res));
 
 export default router;

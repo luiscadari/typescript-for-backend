@@ -4,6 +4,7 @@ import type Pet from "../types/pet.type";
 import EnumEspecie from "../enum/enum.species";
 import PetRepositorry from "../repositories/pet.repository";
 import PetEntity from "../entities/pet.entity";
+import { spec } from "node:test/reporters";
 
 let pets: Pet[] = [];
 let id = 0;
@@ -26,12 +27,8 @@ export default class PetController {
     if (!Object.values(EnumEspecie).includes(species)) {
       res.status(400).json({ errorr: "Especie inválida" });
     }
-    const newPet = new PetEntity();
-    newPet.adopted = adopted;
-    newPet.birth = birth;
-    newPet.id = geraId();
-    newPet.name = name;
-    newPet.species = species;
+    const newPet = new PetEntity(name, species, birth, adopted);
+
     this.repository.create(newPet);
     res.status(200).json(newPet);
   };
