@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 
 import PetController from "../controller/pet.controller";
-import PetRepositorry from "../repositories/pet.rerpository";
+import PetRepositorry from "../repositories/pet.repository";
 import { AppDataSource } from "../config/dataSource.config";
 
 const router = express.Router();
