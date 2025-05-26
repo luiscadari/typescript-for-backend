@@ -5,7 +5,7 @@ type Pet = {
   name: string;
   species: EnumEspecie;
   adopted: boolean;
-  age: number;
+  birth: Date;
 };
 
 export default Pet;

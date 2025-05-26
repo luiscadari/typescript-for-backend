@@ -2,22 +2,37 @@ import { Request, Response } from "express";
 
 import type Pet from "../types/pet.type";
 import EnumEspecie from "../enum/enum.species";
+import PetRepositorry from "../repositories/pet.rerpository";
+import PetEntity from "../entities/pet.entity";
 
 let pets: Pet[] = [];
+let id = 0;
+function geraId() {
+  id = id + 1;
+  return id;
+}
 
 export default class PetController {
+  constructor(private repository: PetRepositorry) {}
   criaPet = (req: Request, res: Response) => {
-    const { id, name, species, age, adopted } = req.body as Pet;
-    if (!name || !species || !age || !adopted) {
+    const { name, species, birth, adopted } = req.body as PetEntity;
+
+    if (!name || !species || !birth || adopted === undefined) {
       res.status(400).json({
         message: "Params are required",
       });
+      return;
     }
     if (!Object.values(EnumEspecie).includes(species)) {
       res.status(400).json({ errorr: "Especie inválida" });
     }
-    const newPet: Pet = { adopted, age, id, name, species };
-    pets.push(newPet);
+    const newPet = new PetEntity();
+    newPet.adopted = adopted;
+    newPet.birth = birth;
+    newPet.id = geraId();
+    newPet.name = name;
+    newPet.species = species;
+    this.repository.create(newPet);
     res.status(200).json(newPet);
   };
   getPets = (req: Request, res: Response) => {

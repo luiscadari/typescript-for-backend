@@ -1,15 +1,17 @@
 import express from "express";
 import { Response } from "express";
-import router from "./routes";
+import "reflect-metadata";
 
+import router from "./routes";
+import { AppDataSource } from "./config/dataSource.config";
 
 const app = express();
 app.use(express.json());
 
 router(app);
 
-app.get("/", ( _, res: Response) => {
-  res.send("Bem vindo ao curso de TypeScript!");
-});
+AppDataSource.initialize()
+  .then(() => console.log("Banco de dados conectado!"))
+  .catch((e: Error) => console.log("Erro", e));
 
 export default app;
