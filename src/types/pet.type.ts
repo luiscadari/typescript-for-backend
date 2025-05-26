@@ -1,7 +1,9 @@
+import EnumEspecie from "../enum/enum.species";
+
 type Pet = {
   id: number;
   name: string;
-  species: string;
+  species: EnumEspecie;
   adopted: boolean;
   age: number;
 };

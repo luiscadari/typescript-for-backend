@@ -1,12 +1,21 @@
 import { Request, Response } from "express";
 
 import type Pet from "../types/pet.type";
+import EnumEspecie from "../enum/enum.species";
 
 let pets: Pet[] = [];
 
 export default class PetController {
   criaPet = (req: Request, res: Response) => {
     const { id, name, species, age, adopted } = req.body as Pet;
+    if (!name || !species || !age || !adopted) {
+      res.status(400).json({
+        message: "Params are required",
+      });
+    }
+    if (!Object.values(EnumEspecie).includes(species)) {
+      res.status(400).json({ errorr: "Especie inválida" });
+    }
     const newPet: Pet = { adopted, age, id, name, species };
     pets.push(newPet);
     res.status(200).json(newPet);
