@@ -1,5 +1,1 @@
-import AdopterEntity from "../../entities/adopter.entity";
-
-export default interface AdopterInterface {
-  create(adopter: AdopterEntity): void | Promise<void>;
-}
+import AdopterEntity from "../../entities/adopter.entity";export default interface AdopterInterface {    create(adopter: AdopterEntity): Promise<AdopterEntity>;    listAdopters(): Promise<AdopterEntity[]>;    getAdopter(id: number): Promise<AdopterEntity | null>;    updateAdopter(id: number, adopter: AdopterEntity): Promise<AdopterEntity>;    deleteAdopter(id: number): Promise<AdopterEntity>;};
