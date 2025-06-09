@@ -20,7 +20,7 @@
   "rules": {
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-misused-promises": "off",
-    "@typescript-eslint/no-extra-semi": false,
+    "@typescript-eslint/no-extra-semi": 0,
     "linebreak-style": [
       "error",
       "unix"
