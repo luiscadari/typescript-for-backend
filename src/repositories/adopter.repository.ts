@@ -1,6 +1,7 @@
 import {Repository} from "typeorm";
 import AdopterEntity from "../entities/adopter.entity";
 import AdopterInterface from "./interfaces/adopter.interface";
+import AddressEntity from "../entities/addressEntity";
 
 export default class AdopterRepository implements AdopterInterface {
     constructor(private repository: Repository<AdopterEntity>) {
@@ -33,4 +34,14 @@ export default class AdopterRepository implements AdopterInterface {
         return adopter;
     }
 
+    async updateAddress(id: number, address: AddressEntity): Promise<{ success: boolean, message?: string }> {
+        const adopter = await this.repository.findOneBy({id});
+        if (!adopter) return {success: false, message: "Adopter not found"};
+        adopter.address = new AddressEntity(
+            address.city,
+            address.state,
+        );
+        await this.repository.save(adopter);
+        return {success: true, message: "Adopter Address updated"};
+    }
 }
