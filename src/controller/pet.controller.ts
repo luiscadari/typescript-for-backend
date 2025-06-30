@@ -42,7 +42,7 @@ export default class PetController {
 
     async putPet(req: Request, res: Response) {
         const {id} = req.params;
-        const {name, species, birth, adopted} = req.body as PetEntity;
+        const {name, species, birth, adopted, adopter} = req.body as PetEntity;
         if (!name || !species || !birth || adopted === undefined) {
             res.status(400).json({
                 message: "Params are required",
@@ -59,6 +59,7 @@ export default class PetController {
             birth,
             adopted,
             id: Number(id),
+            adopter
         });
         res.status(200).json({
             message: "Pet updated successfully",
@@ -80,9 +81,18 @@ export default class PetController {
         });
     }
 
-    async adopt(req: Request, res: Response) {
-        const {pet, adopter} = req.body as { pet: number, adopter: number };
-        if (!pet || !adopter) return res.status(400).json({message: "Params are required"});
-
+    async adopt(req: Request, res: Response): Promise<void> {
+        const {pet} = req.params;
+        const {adopter} = req.body as { pet: number, adopter: number };
+        const {success, message} = await this.repository.adopt(Number(pet), adopter);
+        if (!success) {
+            res.status(404).json({message});
+            return;
+        }
+        res.status(200).json({
+            message: "Pet adopted successfully",
+            pet,
+            adopter
+        });
     }
 }

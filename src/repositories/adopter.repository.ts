@@ -18,7 +18,7 @@ export default class AdopterRepository implements AdopterInterface {
     async updateAdopter(id: number, adopter: AdopterEntity): Promise<AdopterEntity> {
         const existAdopter = await this.repository.findOneBy({id});
         if (!existAdopter) throw new Error("Adopter not found");
-        await this.repository.update(id, existAdopter);
+        await this.repository.update(id, adopter);
         return adopter;
     }
 

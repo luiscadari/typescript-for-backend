@@ -5,13 +5,15 @@ import AdopterEntity from "../entities/adopter.entity";
 
 export default class PetRepository implements InterfacePetRepository {
     private repository: Repository<PetEntity>;
+    private adopterRepository: Repository<AdopterEntity>;
 
-    constructor(repository: Repository<PetEntity>) {
+    constructor(repository: Repository<PetEntity>, adopterRepository: Repository<AdopterEntity>) {
         this.repository = repository;
+        this.adopterRepository = adopterRepository;
     }
 
-    create(pet: PetEntity): void {
-        this.repository.save(pet);
+    async create(pet: PetEntity): Promise<void> {
+        await this.repository.save(pet);
     }
 
     async get(): Promise<Array<PetEntity>> {
@@ -35,10 +37,19 @@ export default class PetRepository implements InterfacePetRepository {
     }
 
     async adopt(petId: number, adopterId: number): Promise<{ success: boolean, message?: string }> {
-        const pet: PetEntity | null = await this.repository.findOneBy({id: petId});
-        if (!pet) return {success: false, message: "Pet not found"};
-        const adopter: AdopterEntity | null = await this.repository.findOneBy({id: adopterId});
-        if (!adopter) return {success: false, message: "Adopter not found"};
-        adopter.pets.push(pet);
+        try {
+            const pet: PetEntity | null = await this.repository.findOneBy({id: petId});
+            if (!pet) return {success: false, message: "Pet not found"};
+            const adopter: AdopterEntity | null = await this.adopterRepository.findOneBy({id: adopterId});
+            if (!adopter) return {success: false, message: "Adopter not found"};
+            adopter.pets.push(pet);
+            pet.adopted = true;
+            pet.adopter = adopter;
+            await this.repository.save(pet);
+            return {success: true, message: "Pet adopted successfully"};
+        } catch (e) {
+            console.log(e);
+            return {success: false, message: "An error occurred while adopting the pet"};
+        }
     }
 }
