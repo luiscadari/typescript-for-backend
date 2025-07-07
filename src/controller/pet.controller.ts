@@ -4,6 +4,7 @@ import type Pet from "../types/pet.type";
 import EnumEspecie from "../enum/enum.species";
 import PetRepositorry from "../repositories/pet.repository";
 import PetEntity from "../entities/pet.entity";
+import EnumPorte from "../enum/enum.porte";
 
 const pets: Pet[] = [];
 let id = 0;
@@ -17,21 +18,25 @@ export default class PetController {
     constructor(private repository: PetRepositorry) {
     }
 
-    criaPet = (req: Request, res: Response) => {
-        const {name, species, birth, adopted} = req.body as PetEntity;
+    criaPet = async (req: Request, res: Response) => {
+        const {name, species, porte, birth, adopted} = req.body as PetEntity;
 
-        if (!name || !species || !birth || adopted === undefined) {
+        if (!name || !species || !birth || adopted === undefined || !porte) {
             res.status(400).json({
                 message: "Params are required",
             });
             return;
         }
         if (!Object.values(EnumEspecie).includes(species)) {
-            res.status(400).json({errorr: "Especie inválida"});
+            res.status(400).json({error: "Especie inválida"});
         }
-        const newPet = new PetEntity(name, species, birth, adopted);
+        if (porte && !(porte in EnumPorte)) {
+            res.status(400).json({error: "Porte inválido"});
+            return;
+        }
+        const newPet = new PetEntity(name, species, porte, birth, adopted);
 
-        this.repository.create(newPet);
+        await this.repository.create(newPet);
         res.status(200).json(newPet);
     };
 
@@ -94,5 +99,15 @@ export default class PetController {
             pet,
             adopter
         });
+    }
+
+    async seatchByPorte(req: Request, res: Response): Promise<void> {
+        const {porte} = req.query;
+        if (!porte) {
+            res.status(400).json({error: "Porte inválido"});
+            return;
+        }
+        const pets = await this.repository.searchByPorte(porte as EnumPorte);
+        res.status(200).json(pets)
     }
 }

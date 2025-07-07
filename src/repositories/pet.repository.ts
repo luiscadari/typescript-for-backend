@@ -2,6 +2,7 @@ import {Repository} from "typeorm";
 import PetEntity from "../entities/pet.entity";
 import InterfacePetRepository from "./interfaces/pet.interface";
 import AdopterEntity from "../entities/adopter.entity";
+import EnumPorte from "../enum/enum.porte";
 
 export default class PetRepository implements InterfacePetRepository {
     private repository: Repository<PetEntity>;
@@ -10,6 +11,10 @@ export default class PetRepository implements InterfacePetRepository {
     constructor(repository: Repository<PetEntity>, adopterRepository: Repository<AdopterEntity>) {
         this.repository = repository;
         this.adopterRepository = adopterRepository;
+    }
+
+    async searchByPorte(porte: EnumPorte): Promise<Array<PetEntity>> {
+        return await this.repository.find({where: {porte}});
     }
 
     async create(pet: PetEntity): Promise<void> {
@@ -52,4 +57,5 @@ export default class PetRepository implements InterfacePetRepository {
             return {success: false, message: "An error occurred while adopting the pet"};
         }
     }
+
 }
