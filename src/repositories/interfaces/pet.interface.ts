@@ -11,4 +11,6 @@ export default interface InterfacePetRepository {
     delete(id: number, pet: PetEntity): Promise<void>;
 
     searchByPorte(porte: EnumPorte): Promise<Array<PetEntity>> | void;
+
+    searchPetByParam<Tipo extends keyof PetEntity>(campo:Tipo, valor: PetEntity[Tipo]): Promise<Array<PetEntity>>;
 }

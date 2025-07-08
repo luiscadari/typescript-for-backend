@@ -17,6 +17,10 @@ export default class PetRepository implements InterfacePetRepository {
         return await this.repository.find({where: {porte}});
     }
 
+    async searchPetByParam<Tipo extends keyof PetEntity>(campo:Tipo, valor: PetEntity[Tipo]): Promise<Array<PetEntity>> {
+        return await this.repository.find({where: {[campo]: valor}});
+    }
+
     async create(pet: PetEntity): Promise<void> {
         await this.repository.save(pet);
     }

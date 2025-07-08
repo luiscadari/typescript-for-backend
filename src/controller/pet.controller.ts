@@ -101,13 +101,27 @@ export default class PetController {
         });
     }
 
-    async seatchByPorte(req: Request, res: Response): Promise<void> {
+    async searchByPorte(req: Request, res: Response): Promise<void> {
         const {porte} = req.query;
-        if (!porte) {
+        if (!porte || !Object.values(EnumPorte).includes(porte as EnumPorte)) {
             res.status(400).json({error: "Porte inválido"});
             return;
         }
         const pets = await this.repository.searchByPorte(porte as EnumPorte);
         res.status(200).json(pets)
+    }
+
+    async searchPetByParams(req: Request, res: Response): Promise<void> {
+        const {campo, valor} = req.query;
+        if(!campo || !valor){
+            res.status(400).json({message: "Params are required"})
+            return;
+        }
+        if(!Object.keys(PetEntity).includes(campo as string)){
+            res.status(400).json({message: "Invalid param"})
+        }
+        const pets = await this.repository.searchPetByParam(campo as keyof PetEntity, valor as string)
+        res.status(200).json(pets)
+        return;
     }
 }
